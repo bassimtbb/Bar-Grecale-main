@@ -1,0 +1,244 @@
+.menu-section {
+  background: linear-gradient(135deg, #fff6eb 0%, #f0f6ff 100%);
+  padding: 80px 0;
+}
+
+.section-header {
+  margin-bottom: 60px;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.section-description {
+  font-size: 1.1rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.menu-filters .menu-categories {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #c9a74d transparent;
+  -webkit-overflow-scrolling: touch;
+  justify-content: flex-start;
+}
+
+.menu-subcategories {
+  margin-top: 16px;
+}
+
+.menu-filters .menu-categories::-webkit-scrollbar {
+  height: 6px;
+}
+
+.menu-filters .menu-categories::-webkit-scrollbar-thumb {
+  background-color: #c9a74d;
+  border-radius: 3px;
+}
+
+.menu-filters .menu-categories::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (min-width: 992px) {
+  .menu-filters .menu-categories {
+    justify-content: center;
+  }
+}
+
+.menu-filters .nav-link {
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-weight: 500;
+  color: #333;
+  background-color: transparent;
+  border: 2px solid #c9a74d;
+  transition: all 0.3s ease;
+}
+
+.menu-filters .nav-link.active,
+.menu-filters .nav-link:hover {
+  background-color: #c9a74d;
+  color: white;
+  border-color: #c9a74d;
+}
+
+.menu-card {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.menu-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.menu-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.menu-price {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #c9a74d;
+  margin-left: 16px;
+}
+
+.menu-price.price-on-request {
+  color: #6c757d;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.menu-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.menu-tag.vegetarian {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.menu-tag.gluten {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.menu-tag.alcohol {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.menu-tag.seafood {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+.menu-tag.meat {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.menu-tag.contains-gluten {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.menu-tag.non-alcoholic {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.menu-description {
+  color: #6c757d;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.menu-items {
+  --bs-gutter-x: 2.5rem;
+  --bs-gutter-y: 2.5rem;
+}
+
+.btn-show-more {
+  border: 2px solid #c9a74d;
+  color: #c9a74d;
+  padding: 12px 32px;
+  border-radius: 30px;
+  font-weight: 600;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-show-more:hover {
+  background-color: #c9a74d;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(201, 167, 77, 0.3);
+}
+
+.btn-download {
+  background-color: #c9a74d;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 30px;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-download:hover {
+  background-color: #b5943b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(201, 167, 77, 0.3);
+}
+
+/* Filtering functionality */
+.menu-item {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.menu-item.hidden {
+  display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .menu-filters .nav-link {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .menu-title {
+    font-size: 1.2rem;
+  }
+
+  .menu-price {
+    font-size: 1.1rem;
+  }
+}
+
+.menu-tag.menu-tag-default {
+  background-color: #f1f3f5;
+  color: #495057;
+}

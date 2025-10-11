@@ -1,0 +1,172 @@
+<section class="manage-section py-5">
+  <div class="container">
+    <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+      <div>
+        <h1 class="page-title">Manage Menu</h1>
+        <p class="page-subtitle">Add new categories and menu items using the forms below.</p>
+      </div>
+      <a routerLink="/" class="btn btn-outline-secondary">&larr; Back to Home</a>
+    </div>
+
+    <div class="alert alert-warning" role="alert" *ngIf="categoriesLoadError">
+      {{ categoriesLoadError }}
+      <button class="btn btn-link p-0 ms-2 align-baseline" type="button" (click)="refreshCategories()">Retry</button>
+    </div>
+
+    <div class="card-grid">
+      <div class="manage-card">
+        <h2 class="card-title">Add Category</h2>
+        <p class="card-lead">Create a new category to keep your menu organised.</p>
+
+        <div class="spinner-border text-primary" role="status" *ngIf="isSavingCategory">
+          <span class="visually-hidden">Saving category...</span>
+        </div>
+
+        <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="form-stack">
+          <div class="mb-3">
+            <label class="form-label" for="categoryCode">Code</label>
+            <input
+              id="categoryCode"
+              type="text"
+              class="form-control"
+              formControlName="code"
+              [class.is-invalid]="categoryControl('code')?.invalid && categoryControl('code')?.touched"
+              placeholder="e.g. STARTERS"
+            >
+            <div class="invalid-feedback" *ngIf="categoryControl('code')?.invalid && categoryControl('code')?.touched">
+              Code is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="categoryName">Name</label>
+            <input
+              id="categoryName"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              [class.is-invalid]="categoryControl('name')?.invalid && categoryControl('name')?.touched"
+              placeholder="e.g. Starters"
+            >
+            <div class="invalid-feedback" *ngIf="categoryControl('name')?.invalid && categoryControl('name')?.touched">
+              Name is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="categoryIcon">Icon URL</label>
+            <input id="categoryIcon" type="url" class="form-control" formControlName="iconUrl" placeholder="https://...">
+          </div>
+
+          <button class="btn btn-primary" type="submit" [disabled]="isSavingCategory">
+            {{ isSavingCategory ? 'Saving...' : 'Create Category' }}
+          </button>
+        </form>
+
+        <div class="alert alert-success mt-3" role="alert" *ngIf="categorySuccess">
+          {{ categorySuccess }}
+        </div>
+        <div class="alert alert-danger mt-3" role="alert" *ngIf="categoryError">
+          {{ categoryError }}
+        </div>
+      </div>
+
+      <div class="manage-card">
+        <h2 class="card-title">Add Item</h2>
+        <p class="card-lead">Publish a new menu item and assign it to a category.</p>
+
+        <div class="spinner-border text-primary" role="status" *ngIf="isSavingItem">
+          <span class="visually-hidden">Saving item...</span>
+        </div>
+
+        <form [formGroup]="itemForm" (ngSubmit)="onSubmitItem()" class="form-stack">
+          <div class="mb-3">
+            <label class="form-label" for="itemName">Name</label>
+            <input
+              id="itemName"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              [class.is-invalid]="itemControl('name')?.invalid && itemControl('name')?.touched"
+              placeholder="e.g. Truffle Pasta"
+            >
+            <div class="invalid-feedback" *ngIf="itemControl('name')?.invalid && itemControl('name')?.touched">
+              Name is required.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="itemDescription">Description</label>
+            <textarea id="itemDescription" rows="3" class="form-control" formControlName="description" placeholder="Short description"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="itemPrice">Price</label>
+            <input
+              id="itemPrice"
+              type="number"
+              step="0.01"
+              min="0"
+              class="form-control"
+              formControlName="price"
+              [class.is-invalid]="itemControl('price')?.invalid && itemControl('price')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="itemControl('price')?.invalid && itemControl('price')?.touched">
+              Please provide a valid price.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="itemPhoto">Photo URL</label>
+            <input id="itemPhoto" type="url" class="form-control" formControlName="photoUrl" placeholder="https://...">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="itemCategory">Category</label>
+            <select
+              id="itemCategory"
+              class="form-select"
+              formControlName="categoryId"
+              [disabled]="isLoadingCategories || !categories.length"
+              [class.is-invalid]="itemControl('categoryId')?.invalid && itemControl('categoryId')?.touched"
+            >
+              <option value="" disabled>Select a category</option>
+              <option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name || category.code || ('Category #' + category.id) }}
+              </option>
+            </select>
+            <div class="form-text" *ngIf="isLoadingCategories">Loading categories...</div>
+            <div class="form-text text-muted" *ngIf="!isLoadingCategories && !categories.length">
+              Create a category first to enable item creation.
+            </div>
+            <div class="invalid-feedback" *ngIf="itemControl('categoryId')?.invalid && itemControl('categoryId')?.touched">
+              Please select a category.
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="itemTagLabel">Tag Label</label>
+              <input id="itemTagLabel" type="text" class="form-control" formControlName="tagLabel" placeholder="e.g. Vegetarian">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="itemTagClass">Tag CSS Class</label>
+              <input id="itemTagClass" type="text" class="form-control" formControlName="tagCssClass" placeholder="e.g. vegetarian">
+            </div>
+          </div>
+
+          <button class="btn btn-primary mt-3" type="submit" [disabled]="isSavingItem">
+            {{ isSavingItem ? 'Saving...' : 'Create Item' }}
+          </button>
+        </form>
+
+        <div class="alert alert-success mt-3" role="alert" *ngIf="itemSuccess">
+          {{ itemSuccess }}
+        </div>
+        <div class="alert alert-danger mt-3" role="alert" *ngIf="itemError">
+          {{ itemError }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,176 @@
+<section class="book-table-section py-5">
+  <div class="container">
+    <div class="info-wrapper d-flex flex-column flex-lg-row align-items-stretch gap-4">
+      <div class="booking-info flex-grow-1">
+        <h1 class="section-main-title">Book Your Table</h1>
+        <p class="section-description">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ultramorque mattis, pulvinar dignibus texe, nipsum erat volutpat.
+        </p>
+
+        <div class="info-section">
+          <h3 class="info-title">Opening Hours:</h3>
+          <div class="info-content">
+            <p class="info-item">Monday - Friday: 1:00 AM - 11:00 PM</p>
+            <p class="info-item">Saturday - Sunday: 10:00 AM - 12:00 AM</p>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="info-title">Location:</h3>
+          <div class="info-content">
+            <p class="info-item">1254 Main Street, Suite 100</p>
+            <p class="info-item">Boston, MA 02110</p>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3 class="info-title">Call Us:</h3>
+          <div class="info-content">
+            <p class="info-item">+1 (617) 306-12384</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="booking-visual flex-grow-1">
+        <div class="booking-visual__frame">
+          <img
+            class="booking-visual__image"
+            src="https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=1200&q=80"
+            alt="Guests dining at Grecale"
+          />
+          <div class="booking-visual__overlay">
+            <span class="booking-visual__badge">Since 2005</span>
+            <p class="booking-visual__caption">An unforgettable dining experience on the Ligurian coast.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-form-container mt-5">
+      <h2 class="form-title">Book A Table</h2>
+      <p class="form-subtitle">Please fill the form below to make a reservation</p>
+
+      <div
+        *ngIf="submitSuccess() || submitError()"
+        class="alert"
+        [class.alert-success]="submitSuccess()"
+        [class.alert-danger]="submitError()"
+        role="alert"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <strong *ngIf="submitSuccess()">Reservation request sent.</strong>
+            <span *ngIf="submitSuccess()">We will confirm availability shortly.</span>
+            <span *ngIf="submitError()">{{ submitError() }}</span>
+          </div>
+          <button type="button" class="btn-close" aria-label="Close" (click)="dismissAlert()"></button>
+        </div>
+      </div>
+
+      <form class="booking-form" [formGroup]="bookingForm" (ngSubmit)="submit()" novalidate>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="name">Your Name</label>
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              [class.is-invalid]="hasFieldError('name')"
+              formControlName="name"
+              placeholder="Enter your name"
+              autocomplete="name"
+            />
+            <div class="invalid-feedback" *ngIf="hasFieldError('name')">
+              Please enter your name.
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="email">Your Email</label>
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              [class.is-invalid]="hasFieldError('email')"
+              formControlName="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+            />
+            <div class="invalid-feedback" *ngIf="hasFieldError('email')">
+              Provide a valid email so we can reach you.
+            </div>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label" for="phone">Your Phone</label>
+            <input
+              id="phone"
+              type="tel"
+              class="form-control"
+              [class.is-invalid]="hasFieldError('phone')"
+              formControlName="phone"
+              placeholder="Enter your phone"
+              autocomplete="tel"
+            />
+            <div class="invalid-feedback" *ngIf="hasFieldError('phone')">
+              Add a reachable phone number.
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="guests">Number of guests</label>
+            <select
+              id="guests"
+              class="form-select"
+              [class.is-invalid]="hasFieldError('guests')"
+              formControlName="guests"
+            >
+              <option [ngValue]="null" disabled>Select number of guests</option>
+              <option *ngFor="let option of guestOptions" [ngValue]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="hasFieldError('guests')">
+              Please select the number of guests.
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label" for="reservationDateTime">Date &amp; Time</label>
+            <input
+              id="reservationDateTime"
+              type="datetime-local"
+              class="form-control"
+              [class.is-invalid]="hasFieldError('reservationDateTime')"
+              formControlName="reservationDateTime"
+              [attr.min]="minDateTime"
+            />
+            <div class="invalid-feedback" *ngIf="hasFieldError('reservationDateTime')">
+              Choose a preferred date and time.
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label" for="notes">Special Requests (optional)</label>
+          <textarea
+            id="notes"
+            rows="4"
+            class="form-control"
+            [class.is-invalid]="hasFieldError('notes')"
+            formControlName="notes"
+            placeholder="Any special requirements or requests..."
+          ></textarea>
+          <div class="invalid-feedback" *ngIf="hasFieldError('notes')">
+            Special requests cannot exceed 500 characters.
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-book-now" [disabled]="isSubmitting()">
+          <span *ngIf="!isSubmitting()">Book Table Now</span>
+          <span *ngIf="isSubmitting()" class="spinner-border spinner-border-sm align-middle" role="status" aria-hidden="true"></span>
+          <span *ngIf="isSubmitting()" class="visually-hidden">Submitting...</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

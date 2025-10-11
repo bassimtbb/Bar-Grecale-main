@@ -1,0 +1,61 @@
+.manage-section {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.page-subtitle {
+  color: #6c757d;
+  margin: 0;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.manage-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 15px 35px rgba(31, 45, 61, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-lead {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+.form-stack .form-control.is-invalid,
+.form-stack .form-select.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-stack .invalid-feedback {
+  display: block;
+}
+
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 576px) {
+  .page-header {
+    align-items: flex-start !important;
+  }
+}

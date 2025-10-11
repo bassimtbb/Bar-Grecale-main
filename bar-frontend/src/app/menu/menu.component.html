@@ -1,0 +1,96 @@
+<section class="menu-section py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title">Menu</h2>
+      <p class="section-description">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit.</p>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-4">
+      <div class="spinner-border" role="status" aria-hidden="true"></div>
+      <span class="ms-2">Loading menu...</span>
+    </div>
+
+    <div *ngIf="!isLoading && loadError" class="alert alert-danger text-center" role="alert">
+      {{ loadError }}
+    </div>
+
+    <ng-container *ngIf="!isLoading && !loadError">
+      <div class="menu-filters text-center mb-5">
+        <ul class="nav nav-pills menu-categories justify-content-lg-center">
+          <li class="nav-item" *ngFor="let category of categoryFilters">
+            <button
+              class="nav-link"
+              type="button"
+              [class.active]="isCategoryActive(category.id)"
+              (click)="setCategoryFilter(category.id)"
+            >
+              {{ category.label }}
+            </button>
+          </li>
+        </ul>
+
+        <ul
+          class="nav nav-pills menu-categories menu-subcategories justify-content-lg-center"
+          *ngIf="subcategoryFilters.length > 0"
+        >
+          <li class="nav-item" *ngFor="let subcategory of subcategoryFilters">
+            <button
+              class="nav-link"
+              type="button"
+              [class.active]="isSubcategoryActive(subcategory.id)"
+              (click)="setSubcategoryFilter(subcategory.id)"
+            >
+              {{ subcategory.label }}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="row g-4 menu-items" *ngIf="filteredItems.length > 0; else emptyMenu">
+        <div
+          class="col-lg-6 menu-item"
+          *ngFor="let item of visibleItems"
+          [attr.data-category]="item.categoryId"
+        >
+          <div class="menu-card">
+            <div class="menu-content">
+              <div class="d-flex justify-content-between align-items-start">
+                <h4 class="menu-title">{{ item.title }}</h4>
+                <ng-container *ngIf="item.price !== undefined; else priceOnRequest">
+                  <span class="menu-price">{{ item.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+                </ng-container>
+                <ng-template #priceOnRequest>
+                  <span class="menu-price price-on-request">Prezzo su richiesta</span>
+                </ng-template>
+              </div>
+              <span
+                *ngIf="item.tag"
+                class="menu-tag"
+                [ngClass]="item.tag.cssClass"
+              >
+                {{ item.tag.label }}
+              </span>
+              <p class="menu-description">{{ item.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #emptyMenu>
+        <p class="text-center py-4">No menu items available at the moment.</p>
+      </ng-template>
+
+      <div class="text-center mt-4" *ngIf="canShowMore">
+        <button type="button" class="btn btn-show-more" (click)="showMore()">
+          Show More
+        </button>
+      </div>
+    </ng-container>
+
+    <div class="text-center mt-5">
+      <button class="btn btn-download">
+        <i class="bi bi-download me-2"></i>Download Full Menu
+      </button>
+    </div>
+  </div>
+</section>
