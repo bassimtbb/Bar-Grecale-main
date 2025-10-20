@@ -16,7 +16,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 		<!-- Unified versions -->
 		<springdoc.version>2.8.6</springdoc.version>
 	</properties>

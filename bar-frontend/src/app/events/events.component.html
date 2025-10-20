@@ -1,0 +1,99 @@
+<section class="events-section" id="events">
+  <div class="container">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-7">
+        <h2 class="section-main-title">Sale Private ed Eventi</h2>
+        <p class="section-description">
+          Gli ambienti del Grecale si trasformano per eventi aziendali, celebrazioni private e iniziative curate da partner
+          esterni. Non offriamo vista mare, ma spazi interni versatili, attrezzature professionali e un team dedicato che lavora
+          al tuo fianco.
+        </p>
+        <p class="section-note small text-muted mt-2">
+          Policy di casa: ospitiamo fino a 100 persone per evento e valutiamo ogni collaborazione di terze parti insieme al nostro
+          staff.
+        </p>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="row g-4 align-items-stretch">
+      <div class="col-md-6 col-lg-4" *ngFor="let offering of eventOfferings; let idx = index">
+        <article class="event-type-card" [attr.data-index]="idx">
+          <h3 class="event-type-title">{{ offering.title }}</h3>
+          <p class="event-type-description">{{ offering.description }}</p>
+          <p class="event-capacity">{{ offering.capacity }}</p>
+        </article>
+      </div>
+      <div class="col-lg-4">
+        <div class="cta-content">
+          <div class="cta-card">
+            <h3 class="cta-title">Pianifichiamo Insieme</h3>
+            <p class="cta-description">
+              Raccontaci il tuo format: coordineremo layout, fornitori esterni e menu dedicati per ospiti, team e partner.
+            </p>
+            <div class="cta-buttons">
+              <a class="btn-primary" href="#contact">
+                <i class="bi bi-people"></i>
+                <span>Vai alla sezione contatti</span>
+              </a>
+            </div>
+            <p class="cta-policy text-muted">
+              Capienza massima 100 ospiti. Prenotazioni e takeover di terzi sono gestiti dal nostro team eventi.
+            </p>
+            <div class="additional-info">
+              <div class="info-item">
+                <i class="bi bi-building"></i>
+                <span>Sala modulabile con regia tecnica e schermi</span>
+              </div>
+              <div class="info-item">
+                <i class="bi bi-people-fill"></i>
+                <span>Coordinamento dedicato per partner, sponsor e fornitori</span>
+              </div>
+              <div class="info-item">
+                <i class="bi bi-plug"></i>
+                <span>Dotazioni per talk, streaming e lanci prodotto</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row align-items-center event-highlight mt-5">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="event-photo-wrapper">
+          <img
+            [src]="showcaseImage"
+            class="event-photo img-fluid"
+            alt="Allestimento sala eventi"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="event-highlight-content">
+          <h3 class="highlight-title">{{ highlight.title }}</h3>
+          <p class="highlight-description">
+            {{ highlight.description }}
+          </p>
+          <ul class="highlight-list">
+            <li *ngFor="let detail of highlight.details">
+              <i class="bi bi-check-circle"></i>
+              <span>{{ detail }}</span>
+            </li>
+          </ul>
+          <div class="highlight-actions">
+            <a class="btn-primary" href="#contact">
+              <i class="bi bi-calendar-event"></i>
+              <span>{{ highlight.contactCta }}</span>
+            </a>
+          </div>
+          <p class="highlight-policy text-muted mt-3">
+            {{ highlight.policyNote }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -2,21 +2,21 @@
   <div class="container">
     <div class="info-wrapper d-flex flex-column flex-lg-row align-items-stretch gap-4">
       <div class="booking-info flex-grow-1">
-        <h1 class="section-main-title">Book Your Table</h1>
+        <h1 class="section-main-title">Prenota il Tuo Tavolo</h1>
         <p class="section-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ultramorque mattis, pulvinar dignibus texe, nipsum erat volutpat.
+          Benvenuti al Grecale. Vi invitiamo a prenotare il vostro tavolo per un'esperienza culinaria indimenticabile.
         </p>
 
         <div class="info-section">
-          <h3 class="info-title">Opening Hours:</h3>
+          <h3 class="info-title">Orari di Apertura:</h3>
           <div class="info-content">
-            <p class="info-item">Monday - Friday: 1:00 AM - 11:00 PM</p>
-            <p class="info-item">Saturday - Sunday: 10:00 AM - 12:00 AM</p>
+            <p class="info-item">Lunedì - Venerdì: 1:00 - 23:00</p>
+            <p class="info-item">Sabato - Domenica: 10:00 - 00:00</p>
           </div>
         </div>
 
         <div class="info-section">
-          <h3 class="info-title">Location:</h3>
+          <h3 class="info-title">Indirizzo:</h3>
           <div class="info-content">
             <p class="info-item">1254 Main Street, Suite 100</p>
             <p class="info-item">Boston, MA 02110</p>
@@ -24,7 +24,7 @@
         </div>
 
         <div class="info-section">
-          <h3 class="info-title">Call Us:</h3>
+          <h3 class="info-title">Chiamaci:</h3>
           <div class="info-content">
             <p class="info-item">+1 (617) 306-12384</p>
           </div>
@@ -39,16 +39,16 @@
             alt="Guests dining at Grecale"
           />
           <div class="booking-visual__overlay">
-            <span class="booking-visual__badge">Since 2005</span>
-            <p class="booking-visual__caption">An unforgettable dining experience on the Ligurian coast.</p>
+            <span class="booking-visual__badge">Dal 2005</span>
+            <p class="booking-visual__caption">Un'esperienza culinaria indimenticabile sulla costa ligure.</p>
           </div>
         </div>
       </div>
     </div>
 
     <div class="booking-form-container mt-5">
-      <h2 class="form-title">Book A Table</h2>
-      <p class="form-subtitle">Please fill the form below to make a reservation</p>
+      <h2 class="form-title">Prenota un Tavolo</h2>
+      <p class="form-subtitle">Compila il modulo sottostante per effettuare una prenotazione</p>
 
       <div
         *ngIf="submitSuccess() || submitError()"
@@ -59,83 +59,83 @@
       >
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <strong *ngIf="submitSuccess()">Reservation request sent.</strong>
-            <span *ngIf="submitSuccess()">We will confirm availability shortly.</span>
+            <strong *ngIf="submitSuccess()">Richiesta di prenotazione inviata.</strong>
+            <span *ngIf="submitSuccess()">Confermeremo la disponibilità a breve.</span>
             <span *ngIf="submitError()">{{ submitError() }}</span>
           </div>
-          <button type="button" class="btn-close" aria-label="Close" (click)="dismissAlert()"></button>
+          <button type="button" class="btn-close" aria-label="Chiudi" (click)="dismissAlert()"></button>
         </div>
       </div>
 
       <form class="booking-form" [formGroup]="bookingForm" (ngSubmit)="submit()" novalidate>
         <div class="row">
           <div class="col-md-4 mb-3">
-            <label class="form-label" for="name">Your Name</label>
+            <label class="form-label" for="name">Nome</label>
             <input
               id="name"
               type="text"
               class="form-control"
               [class.is-invalid]="hasFieldError('name')"
               formControlName="name"
-              placeholder="Enter your name"
+              placeholder="Inserisci il tuo nome"
               autocomplete="name"
             />
             <div class="invalid-feedback" *ngIf="hasFieldError('name')">
-              Please enter your name.
+              Per favore, inserisci il tuo nome.
             </div>
           </div>
           <div class="col-md-4 mb-3">
-            <label class="form-label" for="email">Your Email</label>
+            <label class="form-label" for="email">Email</label>
             <input
               id="email"
               type="email"
               class="form-control"
               [class.is-invalid]="hasFieldError('email')"
               formControlName="email"
-              placeholder="Enter your email"
+              placeholder="Inserisci la tua email"
               autocomplete="email"
             />
             <div class="invalid-feedback" *ngIf="hasFieldError('email')">
-              Provide a valid email so we can reach you.
+              Inserisci un indirizzo email valido per poterti contattare.
             </div>
           </div>
           <div class="col-md-4 mb-3">
-            <label class="form-label" for="phone">Your Phone</label>
+            <label class="form-label" for="phone">Telefono</label>
             <input
               id="phone"
               type="tel"
               class="form-control"
               [class.is-invalid]="hasFieldError('phone')"
               formControlName="phone"
-              placeholder="Enter your phone"
+              placeholder="Inserisci il tuo numero di telefono"
               autocomplete="tel"
             />
             <div class="invalid-feedback" *ngIf="hasFieldError('phone')">
-              Add a reachable phone number.
+              Aggiungi un numero di telefono valido.
             </div>
           </div>
         </div>
 
         <div class="row">
           <div class="col-md-6 mb-3">
-            <label class="form-label" for="guests">Number of guests</label>
+            <label class="form-label" for="guests">Numero di ospiti</label>
             <select
               id="guests"
               class="form-select"
               [class.is-invalid]="hasFieldError('guests')"
               formControlName="guests"
             >
-              <option [ngValue]="null" disabled>Select number of guests</option>
+              <option [ngValue]="null" disabled>Seleziona il numero di ospiti</option>
               <option *ngFor="let option of guestOptions" [ngValue]="option.value">
                 {{ option.label }}
               </option>
             </select>
             <div class="invalid-feedback" *ngIf="hasFieldError('guests')">
-              Please select the number of guests.
+              Seleziona il numero di ospiti.
             </div>
           </div>
           <div class="col-md-6 mb-3">
-            <label class="form-label" for="reservationDateTime">Date &amp; Time</label>
+            <label class="form-label" for="reservationDateTime">Data e Ora</label>
             <input
               id="reservationDateTime"
               type="datetime-local"
@@ -145,30 +145,29 @@
               [attr.min]="minDateTime"
             />
             <div class="invalid-feedback" *ngIf="hasFieldError('reservationDateTime')">
-              Choose a preferred date and time.
+              Scegli una data e un orario preferiti.
             </div>
           </div>
         </div>
 
         <div class="mb-4">
-          <label class="form-label" for="notes">Special Requests (optional)</label>
+          <label class="form-label" for="notes">Richieste Speciali (opzionale)</label>
           <textarea
             id="notes"
             rows="4"
             class="form-control"
             [class.is-invalid]="hasFieldError('notes')"
             formControlName="notes"
-            placeholder="Any special requirements or requests..."
-          ></textarea>
+            placeholder="Eventuali richieste o esigenze particolari..."></textarea>
           <div class="invalid-feedback" *ngIf="hasFieldError('notes')">
-            Special requests cannot exceed 500 characters.
+            Le richieste speciali non possono superare i 500 caratteri.
           </div>
         </div>
 
         <button type="submit" class="btn btn-book-now" [disabled]="isSubmitting()">
-          <span *ngIf="!isSubmitting()">Book Table Now</span>
+          <span *ngIf="!isSubmitting()">Prenota Ora</span>
           <span *ngIf="isSubmitting()" class="spinner-border spinner-border-sm align-middle" role="status" aria-hidden="true"></span>
-          <span *ngIf="isSubmitting()" class="visually-hidden">Submitting...</span>
+          <span *ngIf="isSubmitting()" class="visually-hidden">Invio in corso...</span>
         </button>
       </form>
     </div>

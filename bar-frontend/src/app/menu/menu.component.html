@@ -2,12 +2,12 @@
   <div class="container">
     <div class="section-header text-center mb-5">
       <h2 class="section-title">Menu</h2>
-      <p class="section-description">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit.</p>
+      <p class="section-description">Il nostro menu offre una selezione curata di piatti della tradizione italiana.</p>
     </div>
 
     <div *ngIf="isLoading" class="text-center py-4">
       <div class="spinner-border" role="status" aria-hidden="true"></div>
-      <span class="ms-2">Loading menu...</span>
+      <span class="ms-2">Caricamento menu...</span>
     </div>
 
     <div *ngIf="!isLoading && loadError" class="alert alert-danger text-center" role="alert">
@@ -53,43 +53,58 @@
           [attr.data-category]="item.categoryId"
         >
           <div class="menu-card">
+            <div class="menu-photo" *ngIf="item.photoUrl; else photoPlaceholder">
+              <img
+                [src]="item.photoUrl"
+                class="menu-photo-image"
+                [alt]="item.title ? 'Foto di ' + item.title : 'Foto elemento menu'"
+                loading="lazy"
+              />
+            </div>
             <div class="menu-content">
-              <div class="d-flex justify-content-between align-items-start">
-                <h4 class="menu-title">{{ item.title }}</h4>
+              <div class="menu-header">
+                <div class="menu-title-row">
+                  <h4 class="menu-title">{{ item.title }}</h4>
+                  <span
+                    *ngIf="item.tag"
+                    class="menu-tag"
+                    [ngClass]="item.tag.cssClass"
+                  >
+                    {{ item.tag.label }}
+                  </span>
+                </div>
                 <ng-container *ngIf="item.price !== undefined; else priceOnRequest">
                   <span class="menu-price">{{ item.price | currency:'EUR':'symbol':'1.2-2' }}</span>
                 </ng-container>
-                <ng-template #priceOnRequest>
-                  <span class="menu-price price-on-request">Prezzo su richiesta</span>
-                </ng-template>
               </div>
-              <span
-                *ngIf="item.tag"
-                class="menu-tag"
-                [ngClass]="item.tag.cssClass"
-              >
-                {{ item.tag.label }}
-              </span>
               <p class="menu-description">{{ item.description }}</p>
             </div>
+            <ng-template #photoPlaceholder>
+              <div class="menu-photo menu-photo-placeholder">
+                <i class="bi bi-image"></i>
+              </div>
+            </ng-template>
+            <ng-template #priceOnRequest>
+              <span class="menu-price price-on-request">Prezzo su richiesta</span>
+            </ng-template>
           </div>
         </div>
       </div>
 
       <ng-template #emptyMenu>
-        <p class="text-center py-4">No menu items available at the moment.</p>
+        <p class="text-center py-4">Nessun elemento del menu disponibile al momento.</p>
       </ng-template>
 
       <div class="text-center mt-4" *ngIf="canShowMore">
         <button type="button" class="btn btn-show-more" (click)="showMore()">
-          Show More
+          Mostra di più
         </button>
       </div>
     </ng-container>
 
     <div class="text-center mt-5">
       <button class="btn btn-download">
-        <i class="bi bi-download me-2"></i>Download Full Menu
+        <i class="bi bi-download me-2"></i>Scarica Menu Completo
       </button>
     </div>
   </div>

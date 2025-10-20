@@ -29,6 +29,7 @@ export class MenuItem {
     public title: string,
     public categoryId: string,
     public description: string,
+    public photoUrl?: string,
     public price?: number,
     public tag?: MenuTag
   ) {}
@@ -84,7 +85,7 @@ export class MenuComponent implements OnInit {
   }
 
   get categoryFilters(): { id: string; label: string }[] {
-    return [{ id: ALL_CATEGORY_ID, label: 'All' }, ...this.categories.map(category => ({ id: category.id, label: category.label }))];
+      return [{ id: ALL_CATEGORY_ID, label: 'Tutti' }, ...this.categories.map(category => ({ id: category.id, label: category.label }))];
   }
 
   get subcategoryFilters(): { id: string; label: string }[] {
@@ -98,7 +99,7 @@ export class MenuComponent implements OnInit {
     }
 
     return [
-      { id: ALL_SUBCATEGORY_ID, label: 'All' },
+      { id: ALL_SUBCATEGORY_ID, label: 'Tutti' },
       ...category.subcategories.map(subcategory => ({ id: subcategory.id, label: subcategory.label }))
     ];
   }
@@ -203,14 +204,15 @@ export class MenuComponent implements OnInit {
   private toMenuItem(item: ItemDto): MenuItem {
     const id = typeof item.id === 'number' ? item.id : undefined;
     const title = item.name?.trim() || 'Untitled item';
-    const description = item.description?.trim() || '';
+        const description = item.description?.trim() || 'Nessuna descrizione disponibile';
     const categoryId = this.getCategoryKey(item.category ?? undefined);
     const tagLabel = item.tag?.label?.trim();
     const tagClass = item.tag?.cssClass?.trim();
     const tag = tagLabel ? new MenuTag(tagLabel, tagClass || 'menu-tag-default') : undefined;
+    const photoUrl = item.photoUrl?.trim() || undefined;
     const price = typeof item.price === 'number' && item.price > 0 ? item.price : undefined;
 
-    return new MenuItem(id, title, categoryId, description, price, tag);
+    return new MenuItem(id, title, categoryId, description, photoUrl, price, tag);
   }
 
   private getCategoryKey(category?: CategoryDto | null): string {

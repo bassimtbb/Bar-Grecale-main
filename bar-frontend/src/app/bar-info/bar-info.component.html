@@ -1,0 +1,71 @@
+<section class="bar-info-section" id="about">
+  <div class="container" *ngIf="identity$ | async as identity">
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title">Identità del Grecale</h2>
+      <p class="section-description">
+        Conosci meglio il nostro locale: chi siamo, come ci organizziamo e chi trovi dietro il bancone e in cucina.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="identity-card h-100">
+          <h3 class="identity-title">Profilo</h3>
+          <p class="identity-name">{{ identity.name }}</p>
+          <p class="identity-tagline">{{ identity.tagline }}</p>
+          <ul class="identity-list">
+            <li>
+              <i class="bi bi-geo-alt"></i>
+              <span>{{ identity.address }}</span>
+            </li>
+            <li>
+              <i class="bi bi-telephone"></i>
+              <a class="identity-link" [href]="buildPhoneLink(identity.phone)">{{ identity.phone }}</a>
+            </li>
+            <li>
+              <i class="bi bi-envelope"></i>
+              <a class="identity-link" [href]="buildEmailLink(identity.email)">{{ identity.email }}</a>
+            </li>
+            <li>
+              <i class="bi bi-bank"></i>
+              <span>{{ identity.vatNumber }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="identity-card h-100">
+          <h3 class="identity-title">Turni & servizi</h3>
+          <ul class="schedule-list">
+            <li *ngFor="let shift of identity.timeShifts">
+              <div>
+                <span class="schedule-label">{{ shift.label }}</span>
+                <span class="schedule-time">{{ shift.from }} - {{ shift.to }}</span>
+              </div>
+            </li>
+          </ul>
+          <div class="parking-info">
+            <i class="bi bi-p-square"></i>
+            <span>{{ identity.parkingInfo }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="identity-card h-100">
+          <h3 class="identity-title">Il nostro team</h3>
+          <ul class="team-list">
+            <li *ngFor="let member of identity.team">
+              <span class="team-name">{{ member.name }}</span>
+              <span class="team-role">{{ member.role }}</span>
+            </li>
+          </ul>
+          <p class="identity-note">
+            {{ identity.additionalInfo }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

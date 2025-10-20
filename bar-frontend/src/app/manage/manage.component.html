@@ -2,171 +2,654 @@
   <div class="container">
     <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
       <div>
-        <h1 class="page-title">Manage Menu</h1>
-        <p class="page-subtitle">Add new categories and menu items using the forms below.</p>
+        <h1 class="page-title">Gestione Menu</h1>
+        <p class="page-subtitle">Aggiungi nuove categorie e piatti utilizzando i moduli sottostanti.</p>
       </div>
-      <a routerLink="/" class="btn btn-outline-secondary">&larr; Back to Home</a>
+      <a routerLink="/" class="btn btn-outline-secondary">&larr; Torna alla Home</a>
     </div>
 
-    <div class="alert alert-warning" role="alert" *ngIf="categoriesLoadError">
-      {{ categoriesLoadError }}
-      <button class="btn btn-link p-0 ms-2 align-baseline" type="button" (click)="refreshCategories()">Retry</button>
+    <div class="alert alert-warning d-flex align-items-center gap-2" role="alert" *ngIf="categoriesLoadError">
+      <span>{{ categoriesLoadError }}</span>
+      <button class="btn btn-link p-0 align-baseline" type="button" (click)="refreshCategories()">Riprova</button>
     </div>
 
-    <div class="card-grid">
-      <div class="manage-card">
-        <h2 class="card-title">Add Category</h2>
-        <p class="card-lead">Create a new category to keep your menu organised.</p>
+    <div class="alert alert-warning d-flex align-items-center gap-2" role="alert" *ngIf="itemsLoadError">
+      <span>{{ itemsLoadError }}</span>
+      <button class="btn btn-link p-0 align-baseline" type="button" (click)="refreshCategories()">Riprova</button>
+    </div>
 
-        <div class="spinner-border text-primary" role="status" *ngIf="isSavingCategory">
-          <span class="visually-hidden">Saving category...</span>
-        </div>
+    <ul class="nav nav-pills manage-tabs mb-4">
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="isIdentityPanel" (click)="selectPanel('identity')">
+          <i class="bi bi-building me-2"></i>
+          Identita locale
+        </button>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" [class.active]="isMenuPanel" (click)="selectPanel('menu')">
+          <i class="bi bi-journal-text me-2"></i>
+          Menu e piatti
+        </button>
+      </li>
+    </ul>
 
-        <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="form-stack">
-          <div class="mb-3">
-            <label class="form-label" for="categoryCode">Code</label>
-            <input
-              id="categoryCode"
-              type="text"
-              class="form-control"
-              formControlName="code"
-              [class.is-invalid]="categoryControl('code')?.invalid && categoryControl('code')?.touched"
-              placeholder="e.g. STARTERS"
-            >
-            <div class="invalid-feedback" *ngIf="categoryControl('code')?.invalid && categoryControl('code')?.touched">
-              Code is required.
-            </div>
-          </div>
+    <div class="card-grid" [class.single]="isIdentityPanel">
+      <div class="manage-card" *ngIf="isIdentityPanel">
+        <h2 class="card-title">Identita del Locale</h2>
+        <p class="card-lead">Gestisci le informazioni principali del Bar Grecale, inclusi orari dei turni e referente del team.</p>
 
-          <div class="mb-3">
-            <label class="form-label" for="categoryName">Name</label>
-            <input
-              id="categoryName"
-              type="text"
-              class="form-control"
-              formControlName="name"
-              [class.is-invalid]="categoryControl('name')?.invalid && categoryControl('name')?.touched"
-              placeholder="e.g. Starters"
-            >
-            <div class="invalid-feedback" *ngIf="categoryControl('name')?.invalid && categoryControl('name')?.touched">
-              Name is required.
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="categoryIcon">Icon URL</label>
-            <input id="categoryIcon" type="url" class="form-control" formControlName="iconUrl" placeholder="https://...">
-          </div>
-
-          <button class="btn btn-primary" type="submit" [disabled]="isSavingCategory">
-            {{ isSavingCategory ? 'Saving...' : 'Create Category' }}
-          </button>
-        </form>
-
-        <div class="alert alert-success mt-3" role="alert" *ngIf="categorySuccess">
-          {{ categorySuccess }}
-        </div>
-        <div class="alert alert-danger mt-3" role="alert" *ngIf="categoryError">
-          {{ categoryError }}
-        </div>
-      </div>
-
-      <div class="manage-card">
-        <h2 class="card-title">Add Item</h2>
-        <p class="card-lead">Publish a new menu item and assign it to a category.</p>
-
-        <div class="spinner-border text-primary" role="status" *ngIf="isSavingItem">
-          <span class="visually-hidden">Saving item...</span>
-        </div>
-
-        <form [formGroup]="itemForm" (ngSubmit)="onSubmitItem()" class="form-stack">
-          <div class="mb-3">
-            <label class="form-label" for="itemName">Name</label>
-            <input
-              id="itemName"
-              type="text"
-              class="form-control"
-              formControlName="name"
-              [class.is-invalid]="itemControl('name')?.invalid && itemControl('name')?.touched"
-              placeholder="e.g. Truffle Pasta"
-            >
-            <div class="invalid-feedback" *ngIf="itemControl('name')?.invalid && itemControl('name')?.touched">
-              Name is required.
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="itemDescription">Description</label>
-            <textarea id="itemDescription" rows="3" class="form-control" formControlName="description" placeholder="Short description"></textarea>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="itemPrice">Price</label>
-            <input
-              id="itemPrice"
-              type="number"
-              step="0.01"
-              min="0"
-              class="form-control"
-              formControlName="price"
-              [class.is-invalid]="itemControl('price')?.invalid && itemControl('price')?.touched"
-            >
-            <div class="invalid-feedback" *ngIf="itemControl('price')?.invalid && itemControl('price')?.touched">
-              Please provide a valid price.
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="itemPhoto">Photo URL</label>
-            <input id="itemPhoto" type="url" class="form-control" formControlName="photoUrl" placeholder="https://...">
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="itemCategory">Category</label>
-            <select
-              id="itemCategory"
-              class="form-select"
-              formControlName="categoryId"
-              [disabled]="isLoadingCategories || !categories.length"
-              [class.is-invalid]="itemControl('categoryId')?.invalid && itemControl('categoryId')?.touched"
-            >
-              <option value="" disabled>Select a category</option>
-              <option *ngFor="let category of categories" [value]="category.id">
-                {{ category.name || category.code || ('Category #' + category.id) }}
-              </option>
-            </select>
-            <div class="form-text" *ngIf="isLoadingCategories">Loading categories...</div>
-            <div class="form-text text-muted" *ngIf="!isLoadingCategories && !categories.length">
-              Create a category first to enable item creation.
-            </div>
-            <div class="invalid-feedback" *ngIf="itemControl('categoryId')?.invalid && itemControl('categoryId')?.touched">
-              Please select a category.
-            </div>
-          </div>
-
+        <form [formGroup]="identityForm" (ngSubmit)="onSubmitIdentity()" class="form-stack identity-form">
           <div class="row g-3">
             <div class="col-md-6">
-              <label class="form-label" for="itemTagLabel">Tag Label</label>
-              <input id="itemTagLabel" type="text" class="form-control" formControlName="tagLabel" placeholder="e.g. Vegetarian">
+              <label class="form-label" for="identityName">Nome del locale</label>
+              <input
+                id="identityName"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                [class.is-invalid]="identityForm.get('name')?.invalid && identityForm.get('name')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="identityForm.get('name')?.invalid && identityForm.get('name')?.touched">
+                Il nome e obbligatorio.
+              </div>
             </div>
             <div class="col-md-6">
-              <label class="form-label" for="itemTagClass">Tag CSS Class</label>
-              <input id="itemTagClass" type="text" class="form-control" formControlName="tagCssClass" placeholder="e.g. vegetarian">
+              <label class="form-label" for="identityTagline">Tagline</label>
+              <input id="identityTagline" type="text" class="form-control" formControlName="tagline">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="identityAddress">Indirizzo</label>
+              <textarea
+                id="identityAddress"
+                rows="2"
+                class="form-control"
+                formControlName="address"
+                [class.is-invalid]="identityForm.get('address')?.invalid && identityForm.get('address')?.touched"
+              ></textarea>
+              <div class="invalid-feedback" *ngIf="identityForm.get('address')?.invalid && identityForm.get('address')?.touched">
+                L'indirizzo e obbligatorio.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="identityPhone">Telefono</label>
+              <input
+                id="identityPhone"
+                type="text"
+                class="form-control"
+                formControlName="phone"
+                [class.is-invalid]="identityForm.get('phone')?.invalid && identityForm.get('phone')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="identityForm.get('phone')?.invalid && identityForm.get('phone')?.touched">
+                Il telefono e obbligatorio.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="identityEmail">Email</label>
+              <input
+                id="identityEmail"
+                type="email"
+                class="form-control"
+                formControlName="email"
+                [class.is-invalid]="identityForm.get('email')?.invalid && identityForm.get('email')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="identityForm.get('email')?.invalid && identityForm.get('email')?.touched">
+                Inserisci un'email valida.
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="identityVat">P. IVA / Licenza</label>
+              <input id="identityVat" type="text" class="form-control" formControlName="vatNumber">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="identityParking">Parcheggio / Logistica</label>
+              <input id="identityParking" type="text" class="form-control" formControlName="parkingInfo">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="identityAdditional">Note operative</label>
+              <textarea id="identityAdditional" rows="3" class="form-control" formControlName="additionalInfo"></textarea>
             </div>
           </div>
 
-          <button class="btn btn-primary mt-3" type="submit" [disabled]="isSavingItem">
-            {{ isSavingItem ? 'Saving...' : 'Create Item' }}
+          <div class="identity-subsection mt-4" formArrayName="timeShifts">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="mini-section-title">Orari e turni</h3>
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="addTimeShift()">
+                <i class="bi bi-plus-lg"></i> Aggiungi turno
+              </button>
+            </div>
+
+            <div
+              class="time-shift-row"
+              *ngFor="let timeShiftGroup of timeShiftsControls; let i = index; trackBy: trackByIndex"
+              [formGroupName]="i"
+            >
+              <div class="row g-3 align-items-end">
+                <div class="col-lg-5 col-md-6">
+                  <label class="form-label" [for]="'shiftLabel' + i">Nome turno</label>
+                  <input
+                    [id]="'shiftLabel' + i"
+                    type="text"
+                    class="form-control"
+                    formControlName="label"
+                    [class.is-invalid]="shiftControl(i, 'label')?.invalid && shiftControl(i, 'label')?.touched"
+                  >
+                  <div class="invalid-feedback" *ngIf="shiftControl(i, 'label')?.invalid && shiftControl(i, 'label')?.touched">
+                    Inserisci il nome del turno.
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                  <label class="form-label" [for]="'shiftFrom' + i">Inizio</label>
+                  <input
+                    [id]="'shiftFrom' + i"
+                    type="time"
+                    class="form-control"
+                    formControlName="from"
+                    [class.is-invalid]="shiftControl(i, 'from')?.invalid && shiftControl(i, 'from')?.touched"
+                  >
+                  <div class="invalid-feedback" *ngIf="shiftControl(i, 'from')?.invalid && shiftControl(i, 'from')?.touched">
+                    Inserisci l'orario di inizio.
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                  <label class="form-label" [for]="'shiftTo' + i">Fine</label>
+                  <input
+                    [id]="'shiftTo' + i"
+                    type="time"
+                    class="form-control"
+                    formControlName="to"
+                    [class.is-invalid]="shiftControl(i, 'to')?.invalid && shiftControl(i, 'to')?.touched"
+                  >
+                  <div class="invalid-feedback" *ngIf="shiftControl(i, 'to')?.invalid && shiftControl(i, 'to')?.touched">
+                    Inserisci l'orario di fine.
+                  </div>
+                </div>
+                <div class="col-lg-1 col-md-12">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger w-100 mt-2 mt-lg-0"
+                    (click)="removeTimeShift(i)"
+                    [disabled]="timeShiftsControls.length === 1"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="identity-subsection mt-4" formArrayName="team">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="mini-section-title">Team e referenti</h3>
+              <button type="button" class="btn btn-outline-primary btn-sm" (click)="addTeamMember()">
+                <i class="bi bi-plus-lg"></i> Aggiungi membro
+              </button>
+            </div>
+
+            <div
+              class="team-row"
+              *ngFor="let memberGroup of teamControls; let i = index; trackBy: trackByIndex"
+              [formGroupName]="i"
+            >
+              <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                  <label class="form-label" [for]="'teamName' + i">Nome</label>
+                  <input
+                    [id]="'teamName' + i"
+                    type="text"
+                    class="form-control"
+                    formControlName="name"
+                    [class.is-invalid]="teamControl(i, 'name')?.invalid && teamControl(i, 'name')?.touched"
+                  >
+                  <div class="invalid-feedback" *ngIf="teamControl(i, 'name')?.invalid && teamControl(i, 'name')?.touched">
+                    Inserisci il nome del membro.
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <label class="form-label" [for]="'teamRole' + i">Ruolo</label>
+                  <input
+                    [id]="'teamRole' + i"
+                    type="text"
+                    class="form-control"
+                    formControlName="role"
+                    [class.is-invalid]="teamControl(i, 'role')?.invalid && teamControl(i, 'role')?.touched"
+                  >
+                  <div class="invalid-feedback" *ngIf="teamControl(i, 'role')?.invalid && teamControl(i, 'role')?.touched">
+                    Inserisci il ruolo del membro.
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger w-100 mt-2 mt-md-0"
+                    (click)="removeTeamMember(i)"
+                    [disabled]="teamControls.length === 1"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary mt-4" type="submit">
+            Salva identita
           </button>
         </form>
 
-        <div class="alert alert-success mt-3" role="alert" *ngIf="itemSuccess">
-          {{ itemSuccess }}
+        <div class="alert alert-success mt-3" role="alert" *ngIf="identitySuccess">
+          {{ identitySuccess }}
         </div>
-        <div class="alert alert-danger mt-3" role="alert" *ngIf="itemError">
-          {{ itemError }}
+        <div class="alert alert-danger mt-3" role="alert" *ngIf="identityError">
+          {{ identityError }}
         </div>
       </div>
+      <ng-container *ngIf="isMenuPanel">
+        <div class="manage-card manage-card--overview">
+          <div class="overview-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+            <div>
+              <h2 class="card-title">Panoramica Menu</h2>
+              <p class="card-lead">Consulta categorie, sottocategorie e piatti attualmente pubblicati.</p>
+            </div>
+            <button class="btn btn-outline-secondary align-self-start align-self-lg-center" type="button" (click)="refreshCategories()">
+              <i class="bi bi-arrow-repeat me-2"></i>Ricarica dati
+            </button>
+          </div>
+
+          <div class="menu-overview-state" *ngIf="isLoadingCategories || isLoadingItems">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Caricamento dati del menu...</span>
+            </div>
+            <span class="text-muted ms-3">Caricamento dati del menu...</span>
+          </div>
+
+          <div class="menu-overview-list" *ngIf="!isLoadingCategories && !isLoadingItems">
+            <p class="text-muted" *ngIf="!categories.length && !menuItems.length">
+              Non ci sono ancora categorie o piatti registrati.
+            </p>
+
+            <div class="menu-entity" *ngFor="let category of categories; trackBy: trackByCategory">
+              <div class="menu-entity__header">
+                <div>
+                  <h3 class="menu-entity__title">{{ category.name || category.code || ('Categoria #' + category.id) }}</h3>
+                  <p class="menu-entity__meta">
+                    <span *ngIf="category.code">Codice: {{ category.code }}</span>
+                    <span *ngIf="category.iconUrl">Icona: {{ category.iconUrl }}</span>
+                  </p>
+                </div>
+                <div class="entity-actions">
+                  <button type="button" class="btn btn-sm btn-outline-primary" (click)="startCategoryEdit(category)">
+                    <i class="bi bi-pencil me-1"></i>Modifica
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category)">
+                    <i class="bi bi-trash me-1"></i>Elimina
+                  </button>
+                </div>
+              </div>
+
+              <div class="subcategory-list" *ngIf="category.subcategories?.length; else noSubcategory">
+                <div class="subcategory-card" *ngFor="let subcategory of category.subcategories; trackBy: trackBySubcategory">
+                  <div class="subcategory-card__header">
+                    <div>
+                      <h4 class="subcategory-card__title">{{ subcategory.name || subcategory.slug || 'Sottocategoria' }}</h4>
+                      <p class="subcategory-card__meta">
+                        <span *ngIf="subcategory.slug">Slug: {{ subcategory.slug }}</span>
+                        <span>Posizione: {{ subcategory.position ?? 0 }}</span>
+                      </p>
+                    </div>
+                    <div class="entity-actions">
+                      <button type="button" class="btn btn-sm btn-outline-primary" (click)="startSubcategoryEdit(subcategory)">
+                        <i class="bi bi-pencil me-1"></i>Modifica
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteSubcategory(subcategory)">
+                        <i class="bi bi-trash me-1"></i>Elimina
+                      </button>
+                    </div>
+                  </div>
+
+                  <ul class="item-list">
+                    <li class="item-list__entry" *ngFor="let item of subcategoryItems(subcategory); trackBy: trackByItemId">
+                      <div class="item-list__info">
+                        <span class="item-list__title">{{ item.name || ('Piatto #' + item.id) }}</span>
+                        <span class="item-list__meta" *ngIf="item.tag?.label">{{ item.tag?.label }}</span>
+                      </div>
+                      <div class="item-list__actions">
+                        <span class="item-list__price" *ngIf="item.price != null">{{ item.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+                        <button type="button" class="btn btn-sm btn-outline-primary" (click)="startItemEdit(item)" title="Modifica piatto">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteItem(item)" title="Elimina piatto">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </div>
+                    </li>
+                    <li class="item-list__empty" *ngIf="!subcategoryItems(subcategory).length">
+                      Nessun piatto assegnato.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <ng-template #noSubcategory>
+                <p class="text-muted small mb-2">Nessuna sottocategoria presente.</p>
+              </ng-template>
+
+              <div class="subcategory-card" *ngIf="categoryItemsWithoutSubcategory(category).length">
+                <div class="subcategory-card__header">
+                  <h4 class="subcategory-card__title">Piatti senza sottocategoria</h4>
+                </div>
+                <ul class="item-list">
+                  <li class="item-list__entry" *ngFor="let item of categoryItemsWithoutSubcategory(category); trackBy: trackByItemId">
+                    <div class="item-list__info">
+                      <span class="item-list__title">{{ item.name || ('Piatto #' + item.id) }}</span>
+                      <span class="item-list__meta" *ngIf="item.tag?.label">{{ item.tag?.label }}</span>
+                    </div>
+                    <div class="item-list__actions">
+                      <span class="item-list__price" *ngIf="item.price != null">{{ item.price | currency:'EUR':'symbol':'1.2-2' }}</span>
+                      <button type="button" class="btn btn-sm btn-outline-primary" (click)="startItemEdit(item)" title="Modifica piatto">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteItem(item)" title="Elimina piatto">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="manage-card">
+          <div class="form-card-header d-flex justify-content-between align-items-start gap-2 flex-wrap">
+            <div>
+              <h2 class="card-title">{{ editingCategoryId != null ? 'Modifica Categoria' : 'Nuova Categoria' }}</h2>
+              <p class="card-lead">Crea o aggiorna una categoria per organizzare il menu.</p>
+            </div>
+            <span class="badge bg-primary align-self-center" *ngIf="editingCategoryId != null">Modifica</span>
+          </div>
+
+          <div class="spinner-border text-primary" role="status" *ngIf="isSavingCategory">
+            <span class="visually-hidden">Salvataggio categoria in corso...</span>
+          </div>
+
+          <form [formGroup]="categoryForm" (ngSubmit)="onSubmitCategory()" class="form-stack">
+            <div class="mb-3">
+              <label class="form-label" for="categoryCode">Codice</label>
+              <input
+                id="categoryCode"
+                type="text"
+                class="form-control"
+                formControlName="code"
+                placeholder="es. STARTERS"
+                [class.is-invalid]="categoryControl('code')?.invalid && categoryControl('code')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="categoryControl('code')?.invalid && categoryControl('code')?.touched">
+                Il codice e obbligatorio.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="categoryName">Nome</label>
+              <input
+                id="categoryName"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="es. Antipasti"
+                [class.is-invalid]="categoryControl('name')?.invalid && categoryControl('name')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="categoryControl('name')?.invalid && categoryControl('name')?.touched">
+                Il nome e obbligatorio.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="categoryIcon">URL icona</label>
+              <input id="categoryIcon" type="url" class="form-control" formControlName="iconUrl" placeholder="https://...">
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-primary" type="submit" [disabled]="isSavingCategory">
+                {{ isSavingCategory ? 'Salvataggio...' : (editingCategoryId != null ? 'Aggiorna Categoria' : 'Crea Categoria') }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" *ngIf="editingCategoryId != null" (click)="cancelCategoryEdit()">
+                Annulla
+              </button>
+            </div>
+          </form>
+
+          <div class="alert alert-success mt-3" role="alert" *ngIf="categorySuccess">
+            {{ categorySuccess }}
+          </div>
+          <div class="alert alert-danger mt-3" role="alert" *ngIf="categoryError">
+            {{ categoryError }}
+          </div>
+        </div>
+        <div class="manage-card">
+          <div class="form-card-header d-flex justify-content-between align-items-start gap-2 flex-wrap">
+            <div>
+              <h2 class="card-title">{{ editingSubcategoryId ? 'Modifica Sottocategoria' : 'Nuova Sottocategoria' }}</h2>
+              <p class="card-lead">Organizza i piatti in sottocategorie tematiche.</p>
+            </div>
+            <span class="badge bg-primary align-self-center" *ngIf="editingSubcategoryId">Modifica</span>
+          </div>
+
+          <div class="spinner-border text-primary" role="status" *ngIf="isSavingSubcategory">
+            <span class="visually-hidden">Salvataggio sottocategoria in corso...</span>
+          </div>
+
+          <form [formGroup]="subcategoryForm" (ngSubmit)="onSubmitSubcategory()" class="form-stack">
+            <div class="mb-3">
+              <label class="form-label" for="subcategoryName">Nome</label>
+              <input
+                id="subcategoryName"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="es. Colazioni"
+                [class.is-invalid]="subcategoryForm.get('name')?.invalid && subcategoryForm.get('name')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="subcategoryForm.get('name')?.invalid && subcategoryForm.get('name')?.touched">
+                Il nome e obbligatorio.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="subcategorySlug">Slug</label>
+              <input
+                id="subcategorySlug"
+                type="text"
+                class="form-control"
+                formControlName="slug"
+                placeholder="es. breakfast"
+                [class.is-invalid]="subcategoryForm.get('slug')?.invalid && subcategoryForm.get('slug')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="subcategoryForm.get('slug')?.invalid && subcategoryForm.get('slug')?.touched">
+                Lo slug e obbligatorio.
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="subcategoryPosition">Posizione</label>
+                <input
+                  id="subcategoryPosition"
+                  type="number"
+                  min="0"
+                  class="form-control"
+                  formControlName="position"
+                  [class.is-invalid]="subcategoryForm.get('position')?.invalid && subcategoryForm.get('position')?.touched"
+                >
+                <div class="invalid-feedback" *ngIf="subcategoryForm.get('position')?.invalid && subcategoryForm.get('position')?.touched">
+                  Inserisci una posizione valida (0 o maggiore).
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="subcategoryCategory">Categoria padre</label>
+                <select
+                  id="subcategoryCategory"
+                  class="form-select"
+                  formControlName="categoryId"
+                  [disabled]="isLoadingCategories || !categories.length"
+                  [class.is-invalid]="subcategoryForm.get('categoryId')?.invalid && subcategoryForm.get('categoryId')?.touched"
+                >
+                  <option value="" disabled>Seleziona la categoria</option>
+                  <option *ngFor="let category of categories; trackBy: trackByCategory" [value]="category.id">
+                    {{ category.name || category.code || ('Categoria #' + category.id) }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="subcategoryForm.get('categoryId')?.invalid && subcategoryForm.get('categoryId')?.touched">
+                  Seleziona una categoria.
+                </div>
+                <div class="form-text" *ngIf="isLoadingCategories">Caricamento categorie...</div>
+                <div class="form-text text-muted" *ngIf="!isLoadingCategories && !categories.length">
+                  Crea prima una categoria per definire la sottocategoria.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="subcategoryItems">Piatti assegnati</label>
+              <select
+                id="subcategoryItems"
+                class="form-select"
+                formControlName="itemIds"
+                multiple
+                [disabled]="!subcategoryItemOptions.length"
+              >
+                <option *ngFor="let item of subcategoryItemOptions; trackBy: trackByItemId" [value]="item.id">
+                  {{ item.name || ('Piatto #' + item.id) }}
+                </option>
+              </select>
+              <div class="form-text" *ngIf="!subcategoryItemOptions.length">
+                Seleziona una categoria per visualizzare i piatti disponibili.
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-primary" type="submit" [disabled]="isSavingSubcategory">
+                {{ isSavingSubcategory ? 'Salvataggio...' : (editingSubcategoryId ? 'Aggiorna Sottocategoria' : 'Crea Sottocategoria') }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" *ngIf="editingSubcategoryId" (click)="cancelSubcategoryEdit()">
+                Annulla
+              </button>
+            </div>
+          </form>
+
+          <div class="alert alert-success mt-3" role="alert" *ngIf="subcategorySuccess">
+            {{ subcategorySuccess }}
+          </div>
+          <div class="alert alert-danger mt-3" role="alert" *ngIf="subcategoryError">
+            {{ subcategoryError }}
+          </div>
+        </div>
+
+        <div class="manage-card">
+          <div class="form-card-header d-flex justify-content-between align-items-start gap-2 flex-wrap">
+            <div>
+              <h2 class="card-title">{{ editingItemId != null ? 'Modifica Piatto' : 'Nuovo Piatto' }}</h2>
+              <p class="card-lead">Pubblica o aggiorna un piatto e assegnalo alla categoria corretta.</p>
+            </div>
+            <span class="badge bg-primary align-self-center" *ngIf="editingItemId != null">Modifica</span>
+          </div>
+
+          <div class="spinner-border text-primary" role="status" *ngIf="isSavingItem">
+            <span class="visually-hidden">Salvataggio piatto in corso...</span>
+          </div>
+
+          <form [formGroup]="itemForm" (ngSubmit)="onSubmitItem()" class="form-stack">
+            <div class="mb-3">
+              <label class="form-label" for="itemName">Nome</label>
+              <input
+                id="itemName"
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="es. Pasta al tartufo"
+                [class.is-invalid]="itemControl('name')?.invalid && itemControl('name')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="itemControl('name')?.invalid && itemControl('name')?.touched">
+                Il nome e obbligatorio.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="itemDescription">Descrizione</label>
+              <textarea id="itemDescription" rows="3" class="form-control" formControlName="description" placeholder="Breve descrizione del piatto"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="itemPrice">Prezzo</label>
+              <input
+                id="itemPrice"
+                type="number"
+                step="0.01"
+                min="0"
+                class="form-control"
+                formControlName="price"
+                [class.is-invalid]="itemControl('price')?.invalid && itemControl('price')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="itemControl('price')?.invalid && itemControl('price')?.touched">
+                Inserisci un prezzo valido.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="itemPhoto">URL foto</label>
+              <input id="itemPhoto" type="url" class="form-control" formControlName="photoUrl" placeholder="https://...">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="itemCategory">Categoria</label>
+              <select
+                id="itemCategory"
+                class="form-select"
+                formControlName="categoryId"
+                [disabled]="isLoadingCategories || !categories.length"
+                [class.is-invalid]="itemControl('categoryId')?.invalid && itemControl('categoryId')?.touched"
+              >
+                <option value="" disabled>Seleziona una categoria</option>
+                <option *ngFor="let category of categories; trackBy: trackByCategory" [value]="category.id">
+                  {{ category.name || category.code || ('Categoria #' + category.id) }}
+                </option>
+              </select>
+              <div class="form-text" *ngIf="isLoadingCategories">Caricamento categorie...</div>
+              <div class="form-text text-muted" *ngIf="!isLoadingCategories && !categories.length">
+                Crea una categoria per poter assegnare il piatto.
+              </div>
+              <div class="invalid-feedback" *ngIf="itemControl('categoryId')?.invalid && itemControl('categoryId')?.touched">
+                Seleziona una categoria.
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="itemTagLabel">Etichetta tag</label>
+                <input id="itemTagLabel" type="text" class="form-control" formControlName="tagLabel" placeholder="es. Vegetariano">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="itemTagClass">Classe CSS del tag</label>
+                <input id="itemTagClass" type="text" class="form-control" formControlName="tagCssClass" placeholder="es. vegetarian">
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap mt-3">
+              <button class="btn btn-primary" type="submit" [disabled]="isSavingItem">
+                {{ isSavingItem ? 'Salvataggio...' : (editingItemId != null ? 'Aggiorna Piatto' : 'Crea Piatto') }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" *ngIf="editingItemId != null" (click)="cancelItemEdit()">
+                Annulla
+              </button>
+            </div>
+          </form>
+
+          <div class="alert alert-success mt-3" role="alert" *ngIf="itemSuccess">
+            {{ itemSuccess }}
+          </div>
+          <div class="alert alert-danger mt-3" role="alert" *ngIf="itemError">
+            {{ itemError }}
+          </div>
+        </div>
+      </ng-container>
     </div>
   </div>
 </section>

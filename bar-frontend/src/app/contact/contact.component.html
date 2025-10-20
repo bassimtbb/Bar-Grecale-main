@@ -1,0 +1,87 @@
+<section class="contact-section" id="contact">
+  <div class="container" *ngIf="identity$ | async as identity">
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title">Contatti</h2>
+      <p class="section-description">
+        Parlaci del tuo evento o delle tue esigenze operative: il team del {{ identity.name }} ti rispondera entro 24 ore lavorative.
+      </p>
+    </div>
+
+    <div class="row g-4 align-items-stretch">
+      <div class="col-lg-4 col-md-6">
+        <div class="contact-card h-100">
+          <h3 class="contact-card-title">Team Eventi</h3>
+          <ul class="contact-list">
+            <li class="contact-item" *ngFor="let method of (contactMethods$ | async); trackBy: trackByContact">
+              <i class="bi" [ngClass]="method.icon" aria-hidden="true"></i>
+              <div>
+                <span class="contact-label">{{ method.label }}</span>
+                <a *ngIf="method.href" class="contact-value" [href]="method.href">{{ method.value }}</a>
+                <span *ngIf="!method.href" class="contact-value">{{ method.value }}</span>
+              </div>
+            </li>
+          </ul>
+          <p class="contact-extra text-muted">
+            Ti chiediamo di indicare data, numero di ospiti e tipologia di evento per offrirti una proposta dedicata.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6">
+        <div class="contact-card h-100">
+          <h3 class="contact-card-title">Orari di riferimento</h3>
+          <ul class="schedule-list">
+            <li class="schedule-item" *ngFor="let slot of (scheduleLines$ | async)">
+              <i class="bi bi-clock" aria-hidden="true"></i>
+              <span>{{ slot }}</span>
+            </li>
+          </ul>
+          <p class="contact-extra text-muted">
+            Disponibilita extra orario per eventi privati su richiesta, previa approvazione del locale.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="contact-card contact-location h-100">
+          <h3 class="contact-card-title">Dove siamo</h3>
+          <p class="contact-address">
+            {{ identity.address }}
+          </p>
+          <a
+            class="btn btn-outline-primary btn-location"
+            [href]="mapLink$ | async"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="bi bi-geo-alt"></i>
+            <span>Apri su Google Maps</span>
+          </a>
+          <div class="policy-list mt-4">
+            <h4 class="policy-title">Note operative</h4>
+            <ul>
+              <li *ngFor="let note of (policyNotes$ | async)">{{ note }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5">
+      <div class="col-12 ">
+        <div class="map-wrapper">
+          <iframe
+            class="map-frame"
+            title="Mappa Bar Grecale"
+            [src]="mapEmbed$ | async"
+            width="600"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

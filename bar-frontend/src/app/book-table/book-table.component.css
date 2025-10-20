@@ -13,8 +13,20 @@
   font-size: 3rem;
   font-weight: 700;
   color: #333;
-  margin-bottom: 20px;
+  margin: 0 auto 20px;
   line-height: 1.2;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+.section-main-title::after {
+  content: '';
+  display: block;
+  width: 90px;
+  height: 2px;
+  background-color: #c9a74d;
+  margin: 12px auto 0;
 }
 
 .section-description {
